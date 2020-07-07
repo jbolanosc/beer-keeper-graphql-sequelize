@@ -1,0 +1,30 @@
+version: "3.2"
+services:
+  user-service:
+    build: "./"
+    restart: always
+    networks:
+      - projectnetwork
+    depends_on:
+      - user-service-db
+    environment:
+      - DB_URI=user-service-db://postgres:1234@user-service-db/users
+    ports:
+      - "7100:7100"
+
+  user-service-db:
+    image: postgres
+    restart: always
+    networks:
+      - projectnetwork
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=users
+    ports:
+      - "7200:5432"
+    volumes:
+      - /var/lib/postgresql/data
+
+networks:
+  projectnetwork:
